@@ -1,0 +1,56 @@
+/* 
+
+Problem Statement is to filter out the object with highest marks value.
+
+Input: 
+
+[
+  {
+    "Name": "Alex",
+    "Marks": 95
+  },
+  {
+    "Name": "Gabe",
+    "Marks": 89
+  },
+  {
+    "Name": "John",
+    "Marks": 97
+  }
+]
+
+
+
+
+Output:
+
+[
+  {
+    "Name": "John",
+    "Marks": 97
+  }
+]
+
+
+
+DW 2.0 Script below. 
+
+
+*/
+
+
+
+
+
+
+
+%dw 2.0
+output application/json
+var maxMarks = max(payload.Marks)
+
+var approach_one = payload filter ((item, index) -> item.Marks == maxMarks)
+
+var approach_two = payload maxBy ((item) -> item.Marks)
+---
+
+approach_one
