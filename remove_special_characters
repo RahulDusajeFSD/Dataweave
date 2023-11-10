@@ -1,0 +1,40 @@
+Remove the Special Characters from the Data using Dataweave 2.0
+
+Input:
+
+[
+  {
+    "name": "John's",
+    "id": 10
+  },
+  {
+    "name": "U2#$D+s",
+    "id": 11
+  }
+]
+
+
+Output:
+
+[
+  {
+    "name": "Johns",
+    "id": 10
+  },
+  {
+    "name": "U2Ds",
+    "id": 11
+  }
+]
+
+
+Code:
+
+%dw 2.0
+output application/json
+import isAlphanumeric from dw::core::Strings
+---
+payload map ((item, index) -> (item)  update {
+    case .name -> $ reduce ((item1, accumulator) -> accumulator ++ if(isAlphanumeric(item1)) item1 else "")
+} )
+
