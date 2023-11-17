@@ -1,0 +1,37 @@
+/* Use Case is to Extract the Numbers from a String */
+
+
+Input:
+
+[
+  {
+    "Job": "Engineer - 101"
+  },
+  {
+    "Job": "Manager - 305"
+  },
+  {
+    "Job": "Clerk: - 528"
+  }
+]
+
+Output:
+
+[
+  "101",
+  "305",
+  "528"
+]
+
+
+Dataweave 2.0 Code:
+
+
+%dw 2.0
+output application/json
+import isNumeric from dw::core::Strings
+var approachOne = payload.Job map () -> $ reduce ((item, accumulator) -> (if(isNumeric(accumulator)) accumulator else "") ++ if(isNumeric(item)) item else "")
+var approachTwo = payload.Job map () -> $ replace  /[^0-9]/ with ""
+---
+
+approachOne
