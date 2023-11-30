@@ -1,0 +1,54 @@
+Input:
+
+[
+    {
+        "name": "Marx",
+        "id": 1
+    },
+    {
+        "name": 60,
+        "id": 2
+    },
+    {
+        "name": "Hm",
+        "id": 3
+    }
+]
+
+
+
+Code:
+
+```
+%dw 2.0
+output application/json
+import try, orElseTry from dw::Runtime
+---
+(payload map ((item, index) -> 
+(try(()->{
+    name: item.name as Number,
+    id: item.id
+})) orElseTry (() -> {
+    errorMessage: "Object failed with id " ++ item.id
+})
+   
+)).result
+
+
+
+Output:
+
+[
+  {
+    "errorMessage": "Object failed with id 1"
+  },
+  {
+    "name": 60,
+    "id": 2
+  },
+  {
+    "errorMessage": "Object failed with id 3"
+  }
+]
+
+
