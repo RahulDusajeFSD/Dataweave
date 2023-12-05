@@ -1,0 +1,64 @@
+
+
+Input: 
+
+[
+  {
+    "id": 1,
+    "date": "05/12/2023",
+    "product": "Mac"
+  },
+  {
+    "id": 2,
+    "date": "04/01/2023",
+    "product": "Humidifier"
+  },
+  {
+    "id": 3,
+    "date": "30/11/2023",
+    "product": "Charger"
+  }
+]
+
+
+Code:
+
+%dw 2.0
+output application/json
+var stringToDatePayload = (payload map ((item, index) -> (item)  update {
+    case a at .date -> a as Date {format:"dd/MM/yyyy"} 
+}))
+
+fun calculateDaysBetween(date) = daysBetween(date, now() as Date {format: "dd/MM/yyyy"})
+---
+
+(((stringToDatePayload map ((item, index) -> {
+
+    a: if(calculateDaysBetween(item.date) < 0) -1*(calculateDaysBetween(item.date)) else calculateDaysBetween(item.date),
+    b: item
+}))) orderBy $.a).b
+
+
+//[2,-5,330] map ((item, index) -> if((item) <0) -1*(item) else item)
+
+
+
+Output:
+
+[
+  {
+    "id": 1,
+    "date": "05/12/2023",
+    "product": "Mac"
+  },
+  {
+    "id": 3,
+    "date": "30/11/2023",
+    "product": "Charger"
+  },
+  {
+    "id": 2,
+    "date": "04/01/2023",
+    "product": "Humidifier"
+  }
+]
