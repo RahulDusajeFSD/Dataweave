@@ -1,0 +1,87 @@
+/* Use Case is to Join two Arrays using DW 2.0 */
+
+Input:
+
+[
+  {
+    "ExternalID__c": "5A4C1",
+    "Company": "RXM Tech. Ltd.",
+    "AnnualRevenue__c": "5500k"
+  },
+  {
+    "ExternalID__c": "6MK4F",
+    "Company": "BeLocal Co.",
+    "AnnualRevenue__c": "230k"
+  },
+  {
+    "ExternalID__c": "9HD4M",
+    "Company": "Camosis Builders Pvt. Ltd.",
+    "AnnualRevenue__c": "1000k"
+  },
+  {
+    "ExternalID__c": "YU3P1",
+    "Company": "Cobrass Services Pvt. ltd.",
+    "AnnualRevenue__c": "900k"
+  }
+]
+
+
+[
+  {
+    "Account_Number": "5A4C1",
+    "Regions_Covered": "APAC, AMER"
+  },
+  {
+    "Account_Number": "6MK4F",
+    "Regions_Covered": "EMEA"
+  },
+  {
+    "Account_Number": "9HD4M",
+    "Regions_Covered": "APAC, EMEA"
+  },
+  {
+    "Account_Number": "YU3P1",
+    "Regions_Covered": "AMER"
+  }
+]
+
+
+
+Output:
+
+[
+  {
+    "PrimaryKey": "5A4C1",
+    "Company": "RXM Tech. Ltd.",
+    "AnnualRevenue__c": "5500k",
+    "Regions_Covered": "APAC, AMER"
+  },
+  {
+    "PrimaryKey": "6MK4F",
+    "Company": "BeLocal Co.",
+    "AnnualRevenue__c": "230k",
+    "Regions_Covered": "EMEA"
+  },
+  {
+    "PrimaryKey": "9HD4M",
+    "Company": "Camosis Builders Pvt. Ltd.",
+    "AnnualRevenue__c": "1000k",
+    "Regions_Covered": "APAC, EMEA"
+  },
+  {
+    "PrimaryKey": "YU3P1",
+    "Company": "Cobrass Services Pvt. ltd.",
+    "AnnualRevenue__c": "900k",
+    "Regions_Covered": "AMER"
+  }
+]
+
+
+Code:
+
+join(salesforceData, dbData, (salesforceData)->salesforceData.ExternalID__c, (dbData)-> dbData.Account_Number) map ((item, index) -> {
+    PrimaryKey: item.l.ExternalID__c,
+    Company: item.l.Company,
+    AnnualRevenue__c: item.l.AnnualRevenue__c,
+    Regions_Covered: item.r.Regions_Covered
+})
