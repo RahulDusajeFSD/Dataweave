@@ -1,0 +1,23 @@
+Check if a Number is Armstrong Number using Dataweave 2.0
+
+Input: 1634
+
+
+..............................................................................................................
+
+Code: 
+
+%dw 2.0
+output application/json
+var sizeOfNumber = sizeOf(payload)
+fun checkIfArmstrongNumber(number) = 
+((payload as String) splitBy  "") reduce ((item, accumulator) -> accumulator + (pow(item, sizeOfNumber)))
+---
+checkIfArmstrongNumber(payload) == payload
+
+..............................................................................................................
+
+Output:
+
+true
+
