@@ -1,0 +1,88 @@
+Input:
+
+{
+  "data": [
+    {
+      "type": "text",
+      "content": "Hello, World!"
+    },
+    {
+      "type": "number",
+      "content": 42
+    },
+    {
+      "type": "boolean",
+      "content": true
+    },
+    {
+      "type": "array",
+      "content": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "type": "object",
+      "content": {
+        "key": "value"
+      }
+    }
+  ]
+}
+
+
+Output:
+
+[
+  {
+    "type": "text",
+    "transformedContent": "HELLO, WORLD!"
+  },
+  {
+    "type": "number",
+    "transformedContent": 84
+  },
+  {
+    "type": "boolean",
+    "transformedContent": false
+  },
+  {
+    "type": "array",
+    "transformedContent": [
+      2,
+      4,
+      6
+    ]
+  },
+  {
+    "type": "object",
+    "transformedContent": {
+      "KEY": "VALUE"
+    }
+  }
+]
+
+
+
+Code: 
+
+%dw 2.0
+output application/json
+
+fun transformContent(item) = 
+    item match {
+        case is String -> upper(item)
+        case is Number -> item*2
+        case is Boolean -> false
+        case is Array -> item map((item2, index2) -> item2*2 )
+        case is Object -> item mapObject ((value, key, index) -> ((upper(key)):(upper(value))))
+        else -> item
+
+    
+}
+---
+payload.data map ((item, index) -> {
+    "type": item."type",
+    "transformedContent": transformContent(item.content)
+})
