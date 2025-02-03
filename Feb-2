@@ -1,0 +1,110 @@
+Input:
+
+{
+  "orders": [
+    {
+      "orderId": "A001",
+      "customer": {
+        "id": "C001",
+        "name": "Amit Bannerjee",
+        "address": "123 Main St"
+      },
+      "items": [
+        { "productId": "P001", "quantity": 2 },
+        { "productId": "P002", "quantity": 1 }
+      ]
+    },
+    {
+      "orderId": "A002",
+      "customer": {
+        "id": "C002",
+        "name": "Kalyan Singh",
+        "address": "456 Oak St"
+      },
+      "items": [
+        { "productId": "P001", "quantity": 1 },
+        { "productId": "P003", "quantity": 5 }
+      ]
+    }
+  ],
+  "products": [
+    { "id": "P001", "name": "Widget", "price": 9.99 },
+    { "id": "P002", "name": "Gadget", "price": 14.99 },
+    { "id": "P003", "name": "Doohickey", "price": 19.99 }
+  ]
+}
+
+
+
+
+
+Output:
+
+[
+  {
+    "orderId": "A001",
+    "customer": "Amit Bannerjee",
+    "items": [
+      {
+        "productId": "P001",
+        "quantity": 2,
+        "id": "P001",
+        "name": "Widget",
+        "price": 9.99
+      },
+      {
+        "productId": "P002",
+        "quantity": 1,
+        "id": "P002",
+        "name": "Gadget",
+        "price": 14.99
+      }
+    ],
+    "total": 34.97
+  },
+  {
+    "orderId": "A002",
+    "customer": "Kalyan Singh",
+    "items": [
+      {
+        "productId": "P001",
+        "quantity": 1,
+        "id": "P001",
+        "name": "Widget",
+        "price": 9.99
+      },
+      {
+        "productId": "P003",
+        "quantity": 5,
+        "id": "P003",
+        "name": "Doohickey",
+        "price": 19.99
+      }
+    ],
+    "total": 109.94
+  }
+]
+
+
+
+
+Script:
+
+
+%dw 2.0
+output application/json
+---
+payload.orders map ((item, index) -> {
+    "orderId": item.orderId,
+    "customer": item.customer.name,
+    "items": item.items map ((item2, index2) -> {
+        "productId": item2.productId,
+        "quantity": item2.quantity,
+        "id": payload.products[?$.id == item2.productId][0].id,
+        "name": payload.products[?$.id == item2.productId][0].name,
+        "price": payload.products[?$.id == item2.productId][0].price
+    }),
+    "total": sum(item.items map ((item3, index3) -> 
+       (item3.quantity * payload.products[?$.id == item3.productId][0].price)
+    ))
+})
