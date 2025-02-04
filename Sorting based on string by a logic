@@ -1,0 +1,70 @@
+Input: 
+
+[
+  {
+    "task": "Task 1",
+    "priority": "Medium"
+  },
+  {
+    "task": "Task 2",
+    "priority": "High"
+  },
+  {
+    "task": "Task 3",
+    "priority": "Low"
+  },
+  {
+    "task": "Task 4",
+    "priority": "High"
+  },
+  {
+    "task": "Task 5",
+    "priority": "Medium"
+  }
+]
+
+
+Output:
+
+[
+  {
+    "task": "Task 2",
+    "priority": "High"
+  },
+  {
+    "task": "Task 4",
+    "priority": "High"
+  },
+  {
+    "task": "Task 1",
+    "priority": "Medium"
+  },
+  {
+    "task": "Task 5",
+    "priority": "Medium"
+  },
+  {
+    "task": "Task 3",
+    "priority": "Low"
+  }
+]
+
+Code: 
+
+
+%dw 2.0
+output application/json
+
+fun assignPriority(priority) = {
+
+     a: (priority match  {
+        case "High" -> 1
+        case "Medium" -> 2
+        case "Low" -> 3
+    })
+}
+
+---
+((payload map ((item, index) -> {
+    ((item) ++  {a: assignPriority(item.priority)}.a )
+})) orderBy $.a) map ((item, index) -> (item - "a"))
